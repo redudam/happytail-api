@@ -30,6 +30,18 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
     },
+    organizationId: {
+        type: String,
+    },
+    latitude: {
+        type: Number,
+    },
+    longitude: {
+        type: Number,
+    },
+    rating: {
+        type: Number,
+    },
     telegramId: {
         type: String,
     },
@@ -39,7 +51,12 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
         maxlength: 128,
     },
-    name: {
+    firstName: {
+        type: String,
+        maxlength: 128,
+        trim: true,
+    },
+    lastName: {
         type: String,
         maxlength: 128,
         index: true,
@@ -58,6 +75,12 @@ const userSchema = new mongoose.Schema({
         telegram: {
             type: Boolean,
         }
+    },
+    phone: {
+        type: String,
+        trim: true,
+        match: /^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$/,
+
     }
 }, {
     timestamps: true,
@@ -90,7 +113,8 @@ userSchema.pre('save', async function save(next) {
 userSchema.method({
     transform() {
         const transformed = {};
-        const fields = ['id', 'name', 'email', 'telegramId', 'picture', 'role', 'notifications', 'createdAt'];
+        const fields = ['id', 'firstName', 'lastName', 'telegramId', 'picture', 'role', 'notifications', 'createdAt',
+            'updatedAt', 'email', 'organizationId', 'rating', 'phone' ];
 
         fields.forEach((field) => {
             transformed[field] = this[field];

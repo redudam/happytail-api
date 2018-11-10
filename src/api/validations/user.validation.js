@@ -13,7 +13,7 @@ module.exports = {
         query: {
             page: Joi.number().min(1),
             perPage: Joi.number().min(1).max(100),
-            name: Joi.string(),
+            firstName: Joi.string(),
             email: Joi.string(),
             role: Joi.string().valid(User.roles),
         },

@@ -10,18 +10,34 @@ const { omit } = require('lodash');
 const Task = require('../../models/task.model');
 const { handler: errorHandler } = require('../../middlewares/error');
 
+
+/**
+ * Load user and append to req.
+ * @public
+ */
+exports.get = async (req, res, next, id) => {
+    try {
+        const task = await Task.get(id);
+        res.json(task.transform());
+    } catch (error) {
+        next();
+    }
+};
+
 /**
  * Create new user
  * @public
  */
 exports.create = async (req, res, next) => {
     try {
-        const task = new Task(req.body);
-        const savedUser = await user.save();
+        const loggedUserId = req.user._id;
+        let task = new Task(req.body);
+        task.ownerId = loggedUserId;
+        task = await task.save();
         res.status(httpStatus.CREATED);
-        res.json(savedUser.transform());
+        res.json(task.transform());
     } catch (error) {
-        next(User.checkDuplicateEmail(error));
+        next(error);
     }
 };
 
@@ -65,9 +81,9 @@ exports.update = (req, res, next) => {
  */
 exports.list = async (req, res, next) => {
     try {
-        const users = await User.list(req.query);
-        const transformedUsers = users.map(user => user.transform());
-        res.json(transformedUsers);
+        const tasks = await Task.list(req.query);
+        const transformedTasks = tasks.map(task => task.transform());
+        res.json(transformedTasks);
     } catch (error) {
         next(error);
     }

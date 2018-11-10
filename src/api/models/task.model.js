@@ -35,6 +35,11 @@ const taskSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    description: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     latitude: {
         type: Number,
     },
@@ -80,7 +85,7 @@ const taskSchema = new mongoose.Schema({
 taskSchema.method({
     transform() {
         const transformed = {};
-        const fields = ['name', 'latitude', 'longitude', 'type', 'priority', 'status', 'ownerId',
+        const fields = ['title', 'latitude', 'longitude', 'type', 'priority', 'status', 'ownerId',
             'updatedAt', 'createdAt', 'date', 'duration'];
 
         fields.forEach((field) => {
@@ -90,6 +95,8 @@ taskSchema.method({
         return transformed;
     },
 });
+
+taskSchema.index({ title: "text" });
 
 /**
  * Statics
@@ -124,7 +131,28 @@ taskSchema.statics = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+
+    /**
+     * List tasks in descending order of 'createdAt' timestamp.
+     *
+     * @param {number} skip - Number of tasks to be skipped.
+     * @param {number} limit - Limit number of tasks to be returned.
+     * @returns {Promise<Task[]>}
+     */
+    list({
+             page = 1, perPage = 30, title =''
+         }) {
+
+        const options = title ?  {$text: {$search: title}} : {};
+
+        return this.find(options)
+            .sort({createdAt: -1})
+            .skip(perPage * (page - 1))
+            .limit(perPage)
+            .exec();
+    },
+
 };
 
 /**

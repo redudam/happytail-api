@@ -142,7 +142,7 @@ router
      * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
      * @apiError (Not Found 404)    NotFound     User does not exist
      */
-    .patch(authorize(LOGGED_USER), validate(updateUser), controller.update)
+    .patch(authorize(LOGGED_USER), validate(updateTask), controller.update)
     /**
      * @api {patch} v1/users/:id Delete User
      * @apiDescription Delete a user

@@ -13,7 +13,7 @@ module.exports = {
         query: {
             page: Joi.number().min(1),
             perPage: Joi.number().min(1).max(100),
-            title: Joi.string().null,
+            title: Joi.string(),
         },
     },
 
@@ -27,8 +27,8 @@ module.exports = {
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
-            date : Joi.date().required(),
-            duration : Joi.number.min(1).required,
+            date : Joi.date(),
+            duration : Joi.number().min(1),
         },
     },
 
@@ -43,7 +43,7 @@ module.exports = {
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
             date : Joi.date().required(),
-            duration : Joi.number.min(1).required,
+            duration : Joi.number().min(1).required(),
         },
         params: {
             taskId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),
@@ -51,7 +51,7 @@ module.exports = {
     },
 
     // PATCH /v1/tasks/:taskId
-    updateTasks: {
+    updateTask: {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
@@ -61,7 +61,7 @@ module.exports = {
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
             date : Joi.date().required(),
-            duration : Joi.number.min(1).required,
+            duration : Joi.number().min(1).required(),
         },
         params: {
             taskId: Joi.string().regex(/^[a-fA-F0-9]{24}$/).required(),

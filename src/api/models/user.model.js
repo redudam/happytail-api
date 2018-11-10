@@ -227,9 +227,9 @@ userSchema.statics = {
      * @returns {Promise<User[]>}
      */
     list({
-             page = 1, perPage = 30, name, email, role
+             page = 1, perPage = 30, firstName, email, role
          }) {
-        const options = omitBy({name, email, role}, isNil);
+        const options = omitBy({firstName, email, role}, isNil);
 
         return this.find(options)
             .sort({createdAt: -1})

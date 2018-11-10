@@ -31,11 +31,20 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
+app.options("/*", function(req, res, next){
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.send(200);
+});
+
 // enable authentication
 app.use(passport.initialize());
 passport.use('jwt', strategies.jwt);
 
+
 app.use('/v1', routes);
+
 
 // app.use(bot.webhookCallback(`/v1/bot${token}`));
 

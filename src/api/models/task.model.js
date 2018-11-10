@@ -30,7 +30,7 @@ const type = ['auto', 'animals', 'remote', 'donate', 'else'];
  * @private
  */
 const taskSchema = new mongoose.Schema({
-    name: {
+    title: {
         type: String,
         required: true,
         trim: true,
@@ -80,7 +80,7 @@ const taskSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
-userSchema.pre('save', async function save(next) {
+taskSchema.pre('save', async function save(next) {
     try {
         if (!this.isModified('password')) return next();
 
@@ -98,7 +98,7 @@ userSchema.pre('save', async function save(next) {
 /**
  * Methods
  */
-userSchema.method({
+taskSchema.method({
     transform() {
         const transformed = {};
         const fields = ['name', 'latitude', 'longitude', 'type', 'priority', 'status', 'ownerId',

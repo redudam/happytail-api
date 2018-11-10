@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
-var allowedOrigins = ['http://localhost:3000'];
+var allowedOrigins = ['http://localhost:5000','http://95.213.28.116:5000'];
 app.use(cors({
     origin: function(origin, callback){
         // allow requests with no origin

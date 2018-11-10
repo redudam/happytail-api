@@ -7,6 +7,7 @@
 
 const httpStatus = require('http-status');
 const Organization = require('../../models/organization.model');
+const User = require('../../models/user.model');
 const { handler: errorHandler } = require('../../middlewares/error');
 
 
@@ -30,6 +31,20 @@ exports.load = async (req, res, next, id) => {
  * @public
  */
 exports.get = (req, res) => res.json(req.locals.organization.transform());
+/**
+ * Load user and append to req.
+ * @public
+ */
+exports.getMembers = async (req, res, next) => {
+    const { organization } = req.locals;
+    try {
+        const members = await User.findAll({organization});
+
+        res.json(members.map(member => member.transform()));
+    } catch (e) {
+        next();
+    }
+};
 
 /**
  * Create new user

@@ -12,17 +12,25 @@ const { handler: errorHandler } = require('../../middlewares/error');
 
 
 /**
+ * Load task and append to req.
+ * @public
+ */
+exports.load = async (req, res, next, id) => {
+    try {
+        const task = await Task.get(id);
+        req.locals = { task };
+        return next();
+    } catch (error) {
+        return errorHandler(error, req, res);
+    }
+};
+
+
+/**
  * Load user and append to req.
  * @public
  */
-exports.get = async (req, res, next, id) => {
-    try {
-        const task = await Task.get(id);
-        res.json(task.transform());
-    } catch (error) {
-        next();
-    }
-};
+exports.get = (req, res) => res.json(req.locals.task.transform());
 
 /**
  * Create new user
@@ -47,17 +55,15 @@ exports.create = async (req, res, next) => {
  */
 exports.replace = async (req, res, next) => {
     try {
-        const { user } = req.locals;
-        const newUser = new User(req.body);
-        const ommitRole = user.role !== 'admin' ? 'role' : '';
-        const newUserObject = omit(newUser.toObject(), '_id', ommitRole);
+        const { task } = req.locals;
+        const newTask = new Task(req.body);
 
-        await user.update(newUserObject, { override: true, upsert: true });
-        const savedUser = await User.findById(user._id);
+        await task.update(newTask, { override: true, upsert: true });
+        const savedTask = await Task.findById(task._id);
 
-        res.json(savedUser.transform());
+        res.json(savedTask.transform());
     } catch (error) {
-        next(User.checkDuplicateEmail(error));
+        next(error);
     }
 };
 
@@ -66,13 +72,12 @@ exports.replace = async (req, res, next) => {
  * @public
  */
 exports.update = (req, res, next) => {
-    const ommitRole = req.locals.user.role !== 'admin' ? 'role' : '';
-    const updatedUser = omit(req.body, ommitRole);
-    const user = Object.assign(req.locals.user, updatedUser);
+    const updatedTask = req.body;
+    const task = Object.assign(req.locals.task, updatedTask);
 
-    user.save()
-        .then(savedUser => res.json(savedUser.transform()))
-        .catch(e => next(User.checkDuplicateEmail(e)));
+    task.save()
+        .then(savedTask => res.json(savedTask.transform()))
+        .catch(next);
 };
 
 /**
@@ -94,9 +99,9 @@ exports.list = async (req, res, next) => {
  * @public
  */
 exports.remove = (req, res, next) => {
-    const { user } = req.locals;
+    const { task } = req.locals;
 
-    user.remove()
+    task.remove()
         .then(() => res.status(httpStatus.NO_CONTENT).end())
         .catch(e => next(e));
 };

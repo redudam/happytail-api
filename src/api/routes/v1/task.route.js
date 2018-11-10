@@ -18,6 +18,10 @@ const {
 
 const router = express.Router();
 
+/**
+ * Load user when API with userId route parameter is hit
+ */
+router.param('taskId', controller.load);
 
 router
     .route('/')

@@ -55,7 +55,13 @@ exports.create = async (req, res, next) => {
  */
 exports.replace = async (req, res, next) => {
     try {
-        const { task } = req.locals;
+        const { task, user } = req.locals;
+
+        if (task.ownerId !== user._id){
+            const err = new Error();
+            err.stack= httpStatus.FORBIDDEN;
+            throw err;
+        }
         const newTask = new Task(req.body);
 
         await task.update(newTask, { override: true, upsert: true });
@@ -72,8 +78,16 @@ exports.replace = async (req, res, next) => {
  * @public
  */
 exports.update = (req, res, next) => {
+    const { task, user } = req.locals;
+
+    if (task.ownerId !== user._id){
+        const err = new Error();
+        err.stack = httpStatus.FORBIDDEN;
+        throw err;
+    }
+
     const updatedTask = req.body;
-    const task = Object.assign(req.locals.task, updatedTask);
+    Object.assign(task, updatedTask);
 
     task.save()
         .then(savedTask => res.json(savedTask.transform()))
@@ -99,7 +113,14 @@ exports.list = async (req, res, next) => {
  * @public
  */
 exports.remove = (req, res, next) => {
-    const { task } = req.locals;
+    const { task, user } = req.locals;
+
+    if (task.ownerId !== user._id){
+        const err = new Error();
+        err.stack = httpStatus.FORBIDDEN;
+        throw err;
+    }
+
 
     task.remove()
         .then(() => res.status(httpStatus.NO_CONTENT).end())

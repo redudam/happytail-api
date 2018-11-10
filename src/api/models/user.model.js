@@ -15,7 +15,7 @@ const {env, jwtSecret, jwtExpirationInterval} = require('../../config/vars');
 /**
  * User Roles
  */
-const roles = ['user', 'admin'];
+const roles = ['user', 'admin', 'organization'];
 
 /**
  * User Schema

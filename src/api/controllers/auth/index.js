@@ -29,11 +29,16 @@ function generateTokenResponse(user, accessToken) {
  */
 exports.register = async (req, res, next) => {
     try {
-        const email = req.body.email;
-        const password = req.body.password;
-        await Invitation.validateInvitation(invitationToken, email);
 
-        const user = await (new User(req.body)).save();
+        const invitationToken = req.body.inviteToken;
+        const email = req.body.email;
+        if(invitationToken){
+            await Invitation.validateInvitation(invitationToken, email);
+        }
+
+        let user = new User(req.body);
+        user.role = 'organization';
+        user = await (user).save();
         const userTransformed = user.transform();
         const token = generateTokenResponse(user, user.token());
         res.status(httpStatus.CREATED);

@@ -22,7 +22,7 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            location : Joi.array(),
+            location : Joi.object(),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
@@ -36,7 +36,7 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            location : Joi.array(),
+            location : Joi.object(),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
@@ -53,7 +53,7 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            location : Joi.array(),
+            location : Joi.object(),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),

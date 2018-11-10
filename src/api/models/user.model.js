@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
     },
     organization: {
+        type: Object,
         ref : 'organization',
     },
     latitude: {

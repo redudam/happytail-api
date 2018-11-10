@@ -26,9 +26,7 @@ router
     .patch(authorize(ADMIN), controller.update)
     .delete(authorize(ADMIN), controller.remove);
 
-router
-    .route('/:organizationId/members')
-    .get(controller.getMembers);
+router.use('/:organizationId/members', require('./members.route'));
 
 
 module.exports = router;

@@ -39,7 +39,8 @@ exports.register = async (req, res, next) => {
         if(invitationToken){
             const { organizationId } = await Invitation.validateInvitation(invitationToken, email);
             user.role = 'organization';
-            user.organization = await Organization.get(organizationId);
+            const organization = await Organization.get(organizationId);
+            user.organization = organization.transform();
         }
 
         user = await (user).save();

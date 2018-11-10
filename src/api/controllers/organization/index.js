@@ -39,11 +39,11 @@ exports.get = (req, res) => res.json(req.locals.organization.transform());
 exports.getMembers = async (req, res, next) => {
     const { organization } = req.locals;
     try {
-        const members = await User.findAll({organization});
+        const members = await User.find({organization});
 
         res.json(members.map(member => member.transform()));
     } catch (e) {
-        next();
+        next(e);
     }
 };
 

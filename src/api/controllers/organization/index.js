@@ -8,6 +8,7 @@
 const httpStatus = require('http-status');
 const Organization = require('../../models/organization.model');
 const User = require('../../models/user.model');
+const { omit } = require('lodash');
 const { handler: errorHandler } = require('../../middlewares/error');
 
 
@@ -53,9 +54,9 @@ exports.getMembers = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     try {
         const organization = new Organization(req.body);
-        await organization.save();
+        const created = await organization.save();
         res.status(httpStatus.CREATED);
-        res.json(organization);
+        res.json(created.transform());
     } catch (error) {
         next(error);
     }
@@ -70,11 +71,12 @@ exports.replace = async (req, res, next) => {
         const { organization } = req.locals;
 
         const newOrganization = new Organization(req.body);
+        const newOrganizationObject = omit(newOrganization.toObject(), '_id');
 
-        await organization.update(newOrganization, { override: true, upsert: true });
-        const savedOrganization = await Organization.findById(organization._id);
+        await organization.update(newOrganizationObject, { override: true, upsert: true });
+        const savedOrganization = await Organization.get(organization._id);
 
-        res.json(savedOrganization);
+        res.json(savedOrganization.transform());
     } catch (error) {
         next(error);
     }
@@ -87,12 +89,11 @@ exports.replace = async (req, res, next) => {
 exports.update = (req, res, next) => {
     const { organization } = req.locals;
 
-
     const updatedOrganization = req.body;
     Object.assign(organization, updatedOrganization);
 
     organization.save()
-        .then(res.json)
+        .then(saved => res.json(saved.transform()))
         .catch(next);
 };
 
@@ -103,7 +104,7 @@ exports.update = (req, res, next) => {
 exports.list = async (req, res, next) => {
     try {
         const organizations = await Organization.list(req.query);
-        res.json(organizations);
+        res.json(organizations.map(org=>org.transform()));
     } catch (error) {
         next(error);
     }

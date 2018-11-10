@@ -8,6 +8,7 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 
+
 const APIError = require('../utils/APIError');
 
 const type = ['shelter', 'grooming', 'pet_clinic'];
@@ -123,6 +124,25 @@ organizationSchema.statics = {
     },
 
 };
+
+organizationSchema.method({
+    transform() {
+        const transformed = {};
+        const fields = ['id',
+            'title',
+            'type',
+            'description',
+            'location',
+            'phone',
+            'taskStats'];
+
+        fields.forEach((field) => {
+            transformed[field] = this[field];
+        });
+
+        return transformed;
+    },
+})
 
 organizationSchema.index({ location: "2dsphere" });
 

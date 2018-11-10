@@ -23,14 +23,14 @@ const priority = ['low', 'medium', 'high', 'hot', 'extra'];
 /**
  * Task type
  */
-const type = ['auto', 'animals', 'remote', 'donate', 'else'];
+const type = ['auto', 'animals', 'remote', 'donate', 'other'];
 
 /**
  * Model Schema
  * @private
  */
 const taskSchema = new mongoose.Schema({
-    name: {
+    title: {
         type: String,
         required: true,
         trim: true,
@@ -56,7 +56,7 @@ const taskSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: type,
-        default: 'else',
+        default: 'other',
         required: true,
     },
     ownerId: {
@@ -75,30 +75,9 @@ const taskSchema = new mongoose.Schema({
 });
 
 /**
- * Add your
- * - pre-save hooks
- * - validations
- * - virtuals
- */
-userSchema.pre('save', async function save(next) {
-    try {
-        if (!this.isModified('password')) return next();
-
-        const rounds = env === 'test' ? 1 : 10;
-
-        const hash = await bcrypt.hash(this.password, rounds);
-        this.password = hash;
-
-        return next();
-    } catch (error) {
-        return next(error);
-    }
-});
-
-/**
  * Methods
  */
-userSchema.method({
+taskSchema.method({
     transform() {
         const transformed = {};
         const fields = ['name', 'latitude', 'longitude', 'type', 'priority', 'status', 'ownerId',

@@ -10,6 +10,7 @@ const userRoutes = require('./user.route');
 const invitationRoutes = require('./invitation.route');
 const authRoutes = require('./auth.route');
 const propertyRoutes = require('./property.route');
+const taskRoutes = require('./task.route');
 // const botRoutes = require('./bot.route');
 
 const {token} = require('../../../config/vars');
@@ -21,6 +22,7 @@ router.use('/invitations', invitationRoutes);
 router.use('/auth', authRoutes);
 // router.use('/doorLog', doorLogRoutes);
 router.use('/properties', propertyRoutes);
+router.use('/tasks', taskRoutes);
 // router.use(`/bot${token}`, botRoutes);
 
 module.exports = router;

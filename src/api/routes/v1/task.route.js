@@ -9,12 +9,12 @@ const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/task');
 const { authorize, ADMIN, ORGANIZATION, LOGGED_USER } = require('../../middlewares/auth');
-// const {
-//     listUsers,
-//     createUser,
-//     replaceUser,
-//     updateUser,
-// } = require('../../validations/user.validation');
+const {
+    listTasks,
+    createTask,
+    replaceTask,
+    updateTask,
+} = require('../../validations/task.validation');
 
 const router = express.Router();
 

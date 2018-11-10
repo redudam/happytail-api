@@ -79,8 +79,6 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         trim: true,
-        match: /^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$/,
-
     }
 }, {
     timestamps: true,

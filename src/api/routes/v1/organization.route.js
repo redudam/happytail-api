@@ -3,7 +3,7 @@
  */
 'use strict';
 const express = require('express');
-const controller = require('../../controllers/user');
+const controller = require('../../controllers/organization');
 const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
 
 const router = express.Router();

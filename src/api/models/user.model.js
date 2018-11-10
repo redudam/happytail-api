@@ -30,8 +30,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
     },
-    organizationId: {
-        type: mongoose.Schema.Types.ObjectId,
+    organization: {
         ref : 'organization',
     },
     latitude: {

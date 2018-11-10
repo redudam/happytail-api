@@ -5,6 +5,7 @@
 
 const httpStatus = require('http-status');
 const User = require('../../models/user.model');
+const Organization = require('../../models/organization.model');
 const RefreshToken = require('../../models/refreshToken.model');
 const Invitation = require('../../models/invitation.model');
 const moment = require('moment-timezone');
@@ -38,7 +39,7 @@ exports.register = async (req, res, next) => {
         if(invitationToken){
             const { organizationId } = await Invitation.validateInvitation(invitationToken, email);
             user.role = 'organization';
-            user.organizationId = organizationId;
+            user.organization = await Organization.get(organizationId);
         }
 
         user = await (user).save();

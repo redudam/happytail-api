@@ -49,10 +49,10 @@ const organizationSchema = new mongoose.Schema({
             type: Number,
         },
         active:{
-            type:Number,
+            type: Number,
         },
         done:{
-            type:Number,
+            type: Number,
         }
     }
 });

@@ -16,6 +16,10 @@ const {token} = require('../../../config/vars');
 
 const router = express.Router();
 
+router.route('*')
+    .options((req, res)=>{
+        res.send();
+    });
 router.use('/users', userRoutes);
 router.use('/invitations', invitationRoutes);
 router.use('/auth', authRoutes);

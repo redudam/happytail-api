@@ -7,7 +7,7 @@ const validate = require('express-validation');
 
 const controller = require('../../controllers/invitation');
 
-const {authorize} = require('../../middlewares/auth');
+const {authorize, ADMIN, ORGANIZATION} = require('../../middlewares/auth');
 const {createInvitation} = require('../../validations/invitation.validation');
 
 const router = express.Router();
@@ -31,6 +31,6 @@ router
      * @apiError (Bad Request 400)   ValidationError  Some parameters may contain invalid values
      * @apiError (Unauthorized 401) Unauthorized  Only authenticated users can invite user
      */
-    .post(authorize(), validate(createInvitation), controller.create);
+    .post(authorize([ADMIN, ORGANIZATION]), validate(createInvitation), controller.create);
 
 module.exports = router;

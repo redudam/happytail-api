@@ -89,12 +89,13 @@ exports.replace = async (req, res, next) => {
 exports.update = (req, res, next) => {
     const { organization } = req.locals;
 
-    const updatedOrganization = req.body;
-    Object.assign(organization, updatedOrganization);
+    Object.assign(organization, req.body);
 
     organization.save()
         .then(saved => res.json(saved.transform()))
-        .catch(next);
+        .catch(err =>{
+            next(err);
+        });
 };
 
 /**

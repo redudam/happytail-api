@@ -25,6 +25,11 @@ const invitationSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    organizationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Organization',
+        required: true,
+    },
     email: {
         type: String,
         match: /^\S+@\S+\.\S+$/,
@@ -75,12 +80,12 @@ invitationSchema.statics = {
      * @param {email} email
      * @returns {Invitation}
      */
-    generate(user, email) {
+    generate(user, email, organizationId) {
         const userId = user._id;
         const token = `${crypto.randomBytes(60).toString('hex')}`;
         const expires = moment().add(60, 'days').toDate();
         const tokenObject = new Invitation({
-            token, userId, email, expires,
+            token, userId, email, organizationId, expires,
         });
         tokenObject.save();
         return tokenObject;

@@ -31,7 +31,8 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
     },
     organizationId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'organization',
     },
     latitude: {
         type: Number,
@@ -79,6 +80,20 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         trim: true,
+    },
+    tasks:{
+        type: Array,
+    },
+    taskStats: {
+        all: {
+            type: Number,
+        },
+        undone:{
+            type:Number,
+        },
+        done:{
+            type:Number,
+        }
     }
 }, {
     timestamps: true,
@@ -111,8 +126,17 @@ userSchema.pre('save', async function save(next) {
 userSchema.method({
     transform() {
         const transformed = {};
-        const fields = ['id', 'firstName', 'lastName', 'telegramId', 'picture', 'role', 'notifications', 'createdAt',
-            'updatedAt', 'email', 'organizationId', 'rating', 'phone' ];
+        const fields = ['id',
+            'firstName',
+            'lastName',
+            'picture',
+            'role',
+            'createdAt',
+            'updatedAt',
+            'email',
+            'organizationId',
+            'phone',
+            'tasks'];
 
         fields.forEach((field) => {
             transformed[field] = this[field];
@@ -227,9 +251,9 @@ userSchema.statics = {
      * @returns {Promise<User[]>}
      */
     list({
-             page = 1, perPage = 30, firstName, email, role
+             page = 1, perPage = 30, firstName, email, role, organizationId
          }) {
-        const options = omitBy({firstName, email, role}, isNil);
+        const options = omitBy({firstName, email, role, organizationId}, isNil);
 
         return this.find(options)
             .sort({createdAt: -1})

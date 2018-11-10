@@ -40,11 +40,14 @@ const taskSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    latitude: {
-        type: Number,
-    },
-    longitude: {
-        type: Number,
+    location: {
+        type: {
+            type: String, // Don't do `{ location: { type: String } }`
+            enum: ['Point'], // 'location.type' must be 'Point'
+        },
+        coordinates: {
+            type: [Number],
+        }
     },
     status: {
         type: String,
@@ -141,12 +144,10 @@ taskSchema.statics = {
      * @returns {Promise<Task[]>}
      */
     list({
-             page = 1, perPage = 30, title =''
+             page = 1, perPage = 30, title = ''
          }) {
 
-        const options = title ?  {$text: {$search: title}} : {};
-
-        return this.find(options)
+        return this.find({$text: {$search: title}})
             .sort({createdAt: -1})
             .skip(perPage * (page - 1))
             .limit(perPage)

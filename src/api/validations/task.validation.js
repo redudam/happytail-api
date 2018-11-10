@@ -22,8 +22,7 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            latitude : Joi.number().min(-90).max(90),
-            longitude : Joi.number().min(-180).max(180),
+            location : Joi.array(),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
@@ -37,8 +36,7 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            latitude : Joi.number().min(-90).max(90),
-            longitude : Joi.number().min(-180).max(180),
+            location : Joi.array(),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
@@ -55,8 +53,7 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            latitude : Joi.number().min(-90).max(90),
-            longitude : Joi.number().min(-180).max(180),
+            location : Joi.array(),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),

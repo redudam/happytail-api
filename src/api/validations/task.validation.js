@@ -23,8 +23,8 @@ module.exports = {
             title: Joi.string().required(),
             description: Joi.string().required(),
             location : Joi.object().keys({
-                type: Joi.string().valid('Point'),
-                coordinates: Joi.array().items(Joi.number()).min(2).max(2)
+                type: Joi.string().valid('Point').required(),
+                coordinates: Joi.array().items(Joi.number()).min(2).max(2).required()
             }),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
@@ -40,8 +40,8 @@ module.exports = {
             title: Joi.string().required(),
             description: Joi.string().required(),
             location : Joi.object().keys({
-                type: Joi.string().valid('Point'),
-                coordinates: Joi.array().items(Joi.number()).min(2).max(2)
+                type: Joi.string().valid('Point').required(),
+                coordinates: Joi.array().items(Joi.number()).min(2).max(2).required()
             }),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
@@ -60,8 +60,8 @@ module.exports = {
             title: Joi.string().required(),
             description: Joi.string().required(),
             location : Joi.object().keys({
-                type: Joi.string().valid('Point'),
-                coordinates: Joi.array().items(Joi.number()).min(2).max(2)
+                type: Joi.string().valid('Point').required(),
+                coordinates: Joi.array().items(Joi.number()).min(2).max(2).required()
             }),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),

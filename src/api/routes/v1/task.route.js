@@ -165,6 +165,18 @@ router
      */
     .delete(authorize(ORGANIZATION), controller.remove);
 
+router
+    .route('/:taskId/take')
+    .post(authorize(LOGGED_USER), controller.take);
+
+router
+    .route('/:taskId/release')
+    .post(authorize(LOGGED_USER), controller.release);
+
+router
+    .route('/:taskId/done')
+    .post(authorize(LOGGED_USER), controller.done);
+
 
 
 module.exports = router;

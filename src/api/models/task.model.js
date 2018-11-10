@@ -13,7 +13,7 @@ const APIError = require('../utils/APIError');
 /**
  * Task Status
  */
-const status = ['available', 'in_progress', 'hidden', 'done', 'deleted'];
+const status = ['available', 'in_progress', 'hidden', 'done', 'deleted', 'assigned'];
 
 /**
  * Task Priority
@@ -72,12 +72,22 @@ const taskSchema = new mongoose.Schema({
         ref : 'user',
         required: true,
     },
+    organizationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'organization',
+        required: true,
+    },
     date: {
         type: Date,
     },
     duration:{
         type: Number,
-    }
+    },
+    hasManyAssignee:{
+        type: Boolean
+    },
+
+
 }, {
     timestamps: true,
 });
@@ -89,7 +99,7 @@ taskSchema.method({
     transform() {
         const transformed = {};
         const fields = ['id', 'title', 'location', 'type', 'priority', 'status', 'ownerId',
-            'updatedAt', 'createdAt', 'date', 'duration'];
+            'updatedAt', 'createdAt', 'date', 'duration', 'hasManyAssignee'];
 
         fields.forEach((field) => {
             transformed[field] = this[field];
@@ -161,9 +171,11 @@ taskSchema.statics = {
              page = 1, perPage = 30, title
          }) {
 
-        const textSearch = title ? {$text: {$search: title}} : {}
+        const textSearch = title ? {$text: {$search: title}} : {};
 
-        return this.find(textSearch)
+        return this.find().and([textSearch, {status:{
+                $nin: [ 'hidden', 'deleted']
+            }}])
             .sort({createdAt: -1})
             .skip(perPage * (page - 1))
             .limit(perPage)

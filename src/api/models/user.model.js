@@ -134,7 +134,7 @@ userSchema.method({
             'createdAt',
             'updatedAt',
             'email',
-            'organizationId',
+            'organization',
             'phone',
             'tasks'];
 

@@ -72,10 +72,9 @@ const taskSchema = new mongoose.Schema({
         ref : 'user',
         required: true,
     },
-    organizationId: {
-        type: mongoose.Schema.Types.ObjectId,
+    organization: {
+        type: Object,
         ref : 'organization',
-        required: true,
     },
     date: {
         type: Date,
@@ -99,7 +98,7 @@ taskSchema.method({
     transform() {
         const transformed = {};
         const fields = ['id', 'title', 'location', 'type', 'priority', 'status', 'ownerId',
-            'updatedAt', 'createdAt', 'date', 'duration', 'hasManyAssignee'];
+            'updatedAt', 'createdAt', 'date', 'duration', 'hasManyAssignee', 'organization'];
 
         fields.forEach((field) => {
             transformed[field] = this[field];

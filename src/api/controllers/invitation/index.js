@@ -12,9 +12,9 @@ const Invitation = require('../../models/invitation.model');
 exports.create = async (req, res, next) => {
     try {
         const user = req.user;
-        const { email } = req.body;
+        const { email, organizationId } = req.body;
 
-        const inviteObject = await Invitation.generate(user, email);
+        const inviteObject = await Invitation.generate(user, email, organizationId);
 
         return res.json(inviteObject);
     } catch (error) {

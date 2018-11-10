@@ -6,7 +6,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-// const cors = require('cors');
+const cors = require('cors');
 const helmet = require('helmet');
 
 const routes = require('../api/routes/v1');
@@ -29,14 +29,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
-// app.use(cors());
+app.use(cors());
 
-app.options("/*", function(req, res, next){
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    res.send(200);
-});
+// app.options("/*", function(req, res, next){
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE,OPTIONS');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+//     res.send(200);
+// });
 
 // enable authentication
 app.use(passport.initialize());

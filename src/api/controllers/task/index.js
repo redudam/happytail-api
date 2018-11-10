@@ -42,6 +42,7 @@ exports.create = async (req, res, next) => {
     try {
         const loggedUserId = req.user._id;
         let task = new Task(req.body);
+        task.organization = user.organization;
         task.ownerId = loggedUserId;
         task = await task.save();
         res.status(httpStatus.CREATED);

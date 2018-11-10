@@ -47,7 +47,7 @@ const taskSchema = new mongoose.Schema({
         },
         coordinates: {
             type: [Number],
-        }
+        },
     },
     status: {
         type: String,
@@ -97,6 +97,19 @@ taskSchema.method({
 
         return transformed;
     },
+});
+
+taskSchema.pre('save', async function save(next) {
+    try {
+        const task = this;
+        if (!task.location.type && !task.location.coordinates.length) {
+            task.location= undefined;
+        }
+
+        return next();
+    } catch (error) {
+        return next(error);
+    }
 });
 
 taskSchema.index({ title: "text" });

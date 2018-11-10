@@ -32,12 +32,14 @@ exports.register = async (req, res, next) => {
 
         const invitationToken = req.body.inviteToken;
         const email = req.body.email;
-        if(invitationToken){
-            await Invitation.validateInvitation(invitationToken, email);
-        }
 
         let user = new User(req.body);
-        user.role = 'organization';
+
+        if(invitationToken){
+            await Invitation.validateInvitation(invitationToken, email);
+            user.role = 'organization';
+        }
+
         user = await (user).save();
         const userTransformed = user.transform();
         const token = generateTokenResponse(user, user.token());

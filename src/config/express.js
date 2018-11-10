@@ -11,7 +11,7 @@ const helmet = require('helmet');
 
 const routes = require('../api/routes/v1');
 const error = require('../api/middlewares/error');
-const bot = require('./telegraf');
+// const bot = require('./telegraf');
 const strategies = require('./passport');
 const {token} = require('../config/vars');
 
@@ -37,7 +37,7 @@ passport.use('jwt', strategies.jwt);
 
 app.use('/v1', routes);
 
-app.use(bot.webhookCallback(`/v1/bot${token}`));
+// app.use(bot.webhookCallback(`/v1/bot${token}`));
 
 // if error is not an instanceOf APIError, convert it.
 app.use(error.converter);

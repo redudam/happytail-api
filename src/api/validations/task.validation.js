@@ -22,7 +22,10 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            location : Joi.object(),
+            location : Joi.object().keys({
+                type: Joi.string().valid('Point'),
+                coordinates: Joi.array().items(Joi.number()).min(2).max(2)
+            }),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
@@ -36,7 +39,10 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            location : Joi.object(),
+            location : Joi.object().keys({
+                type: Joi.string().valid('Point'),
+                coordinates: Joi.array().items(Joi.number()).min(2).max(2)
+            }),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),
@@ -53,7 +59,10 @@ module.exports = {
         body: {
             title: Joi.string().required(),
             description: Joi.string().required(),
-            location : Joi.object(),
+            location : Joi.object().keys({
+                type: Joi.string().valid('Point'),
+                coordinates: Joi.array().items(Joi.number()).min(2).max(2)
+            }),
             status : Joi.string().valid(Task.status),
             priority : Joi.string().valid(Task.priority),
             type : Joi.string().valid(Task.type),

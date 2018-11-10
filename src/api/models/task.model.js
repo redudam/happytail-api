@@ -88,7 +88,7 @@ const taskSchema = new mongoose.Schema({
 taskSchema.method({
     transform() {
         const transformed = {};
-        const fields = ['title', 'latitude', 'longitude', 'type', 'priority', 'status', 'ownerId',
+        const fields = ['title', 'location', 'type', 'priority', 'status', 'ownerId',
             'updatedAt', 'createdAt', 'date', 'duration'];
 
         fields.forEach((field) => {
@@ -100,6 +100,7 @@ taskSchema.method({
 });
 
 taskSchema.index({ title: "text" });
+taskSchema.index({ location: "2dsphere" });
 
 /**
  * Statics
@@ -144,10 +145,25 @@ taskSchema.statics = {
      * @returns {Promise<Task[]>}
      */
     list({
-             page = 1, perPage = 30, title = ''
+             page = 1, perPage = 30, title, distance=0
          }) {
 
-        return this.find({$text: {$search: title}})
+        const textSearch = title ? {$text: {$search: title}} : {}
+
+        const loc = distance > 0 ? {
+            location:
+                { $near :
+                        {
+                            $geometry: { type: "Point"},
+                            $maxDistance: distance
+                        }
+                }
+        } : {};
+
+        return this.find().and([
+            textSearch,
+            loc
+        ])
             .sort({createdAt: -1})
             .skip(perPage * (page - 1))
             .limit(perPage)

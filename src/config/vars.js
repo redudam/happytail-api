@@ -14,6 +14,8 @@ require('dotenv-safe').load({
 module.exports = {
     url: process.env.URL,
     env: process.env.NODE_ENV,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
     port: process.env.PORT || 3000,
     jwtSecret: process.env.JWT_SECRET,
     jwtExpirationInterval: process.env.JWT_EXPIRATION_MINUTES,

@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     },
     organization: {
         type: Object,
-        ref : 'organization',
+        ref: 'organization',
     },
     latitude: {
         type: Number,
@@ -81,18 +81,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    tasks:{
+    tasks: {
         type: Array,
+        default: []
     },
     taskStats: {
         all: {
             type: Number,
         },
-        undone:{
-            type:Number,
+        undone: {
+            type: Number,
         },
-        done:{
-            type:Number,
+        done: {
+            type: Number,
         }
     }
 }, {
@@ -107,7 +108,23 @@ const userSchema = new mongoose.Schema({
  */
 userSchema.pre('save', async function save(next) {
     try {
-        if (!this.isModified('password')) return next();
+        const {tasks} = this;
+        if (!this.isModified('password')) {
+
+            if(tasks){
+                tasks.forEach(task => {
+                    if (task.status === 'assigned') {
+                        this.taskStats.undone += 1;
+                    } else if (task.status === 'done') {
+                        this.taskStats.done += 1;
+                    }
+                });
+            }
+
+            this.taskStats.all = tasks.lenght || 0;
+
+            return next();
+        }
 
         const rounds = env === 'test' ? 1 : 10;
 
@@ -136,7 +153,8 @@ userSchema.method({
             'email',
             'organization',
             'phone',
-            'tasks'];
+            'tasks',
+            'taskStats'];
 
         fields.forEach((field) => {
             transformed[field] = this[field];

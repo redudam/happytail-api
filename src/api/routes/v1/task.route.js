@@ -8,7 +8,7 @@
 const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/task');
-const { authorize, ADMIN, ORGANIZATION, LOGGED_USER } = require('../../middlewares/auth');
+const { authorize, ADMIN, ORGANIZATION, USER } = require('../../middlewares/auth');
 const {
     listTasks,
     createTask,
@@ -146,7 +146,7 @@ router
      * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can modify the data
      * @apiError (Not Found 404)    NotFound     User does not exist
      */
-    .patch(authorize(LOGGED_USER), validate(updateTask), controller.update)
+    .patch(authorize(USER), validate(updateTask), controller.update)
     /**
      * @api {patch} v1/users/:id Delete User
      * @apiDescription Delete a user
@@ -165,18 +165,8 @@ router
      */
     .delete(authorize(ORGANIZATION), controller.remove);
 
-router
-    .route('/:taskId/take')
-    .post(authorize(LOGGED_USER), controller.take);
-
-router
-    .route('/:taskId/release')
-    .post(authorize(LOGGED_USER), controller.release);
-
-router
-    .route('/:taskId/done')
-    .post(authorize(LOGGED_USER), controller.done);
-
-
+router.use('/:taskId/take', require('./task/takeTask.router'));
+router.use('/:taskId/release', require('./task/releaseTask.router'));
+router.use('/:taskId/finish', require('./task/finishTask.router'));
 
 module.exports = router;

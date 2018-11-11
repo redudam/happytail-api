@@ -167,14 +167,21 @@ taskSchema.statics = {
      * @returns {Promise<Task[]>}
      */
     list({
-             page = 1, perPage = 30, title
+             page = 1, perPage = 30, title, priority
          }) {
 
         const textSearch = title ? {$text: {$search: title}} : {};
 
-        return this.find().and([textSearch, {status:{
+
+        const statusFilter = {status:{
                 $nin: [ 'hidden', 'deleted']
-            }}])
+            }};
+
+        const filters = [textSearch, statusFilter];
+        if (priority) {
+            filters.push({priority: {$in: priority}});
+        }
+        return this.find().and(filters)
             .sort({createdAt: -1})
             .skip(perPage * (page - 1))
             .limit(perPage)

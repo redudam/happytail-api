@@ -61,6 +61,9 @@ const organizationSchema = new mongoose.Schema({
 
 organizationSchema.pre('save', async function save(next) {
     try {
+
+
+
         const organization = this;
         if (!organization.location.type && !organization.location.coordinates.length) {
             organization.location = undefined;

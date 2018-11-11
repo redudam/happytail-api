@@ -4,7 +4,7 @@
 'use strict';
 
 const Invitation = require('../../models/invitation.model');
-const sendEmail = require('../../../config/nodemailer');
+// const sendEmail = require('../../../config/nodemailer');
 
 /**
  * Create invitation

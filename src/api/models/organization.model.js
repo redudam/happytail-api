@@ -32,14 +32,11 @@ const organizationSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    location: {
-        type: {
-            type: String, // Don't do `{ location: { type: String } }`
-            enum: ['Point'], // 'location.type' must be 'Point'
-        },
-        coordinates: {
-            type: [Number],
-        },
+    latitude: {
+        type: Number,
+    },
+    longitude: {
+        type: Number,
     },
     phone: {
         type: String,
@@ -61,14 +58,6 @@ const organizationSchema = new mongoose.Schema({
 
 organizationSchema.pre('save', async function save(next) {
     try {
-
-
-
-        const organization = this;
-        if (!organization.location.type && !organization.location.coordinates.length) {
-            organization.location = undefined;
-        }
-
         return next();
     } catch (error) {
         return next(error);
@@ -146,7 +135,5 @@ organizationSchema.method({
         return transformed;
     },
 })
-
-organizationSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model('Organization', organizationSchema);

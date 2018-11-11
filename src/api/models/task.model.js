@@ -40,14 +40,11 @@ const taskSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    location: {
-        type: {
-            type: String, // Don't do `{ location: { type: String } }`
-            enum: ['Point'], // 'location.type' must be 'Point'
-        },
-        coordinates: {
-            type: [Number],
-        },
+    latitude: {
+        type: Number,
+    },
+    longitude: {
+        type: Number,
     },
     status: {
         type: String,
@@ -97,7 +94,7 @@ const taskSchema = new mongoose.Schema({
 taskSchema.method({
     transform() {
         const transformed = {};
-        const fields = ['id', 'title', 'location', 'type', 'priority', 'status', 'ownerId',
+        const fields = ['id', 'title', 'latitude','longitude', 'type', 'priority', 'status', 'ownerId',
             'updatedAt', 'createdAt', 'date', 'duration', 'hasManyAssignee', 'organization'];
 
         fields.forEach((field) => {
@@ -110,11 +107,6 @@ taskSchema.method({
 
 taskSchema.pre('save', async function save(next) {
     try {
-        const task = this;
-        if (!task.location.type && !task.location.coordinates.length) {
-            task.location= undefined;
-        }
-
         return next();
     } catch (error) {
         return next(error);
@@ -122,7 +114,6 @@ taskSchema.pre('save', async function save(next) {
 });
 
 taskSchema.index({ title: "text" });
-taskSchema.index({ location: "2dsphere" });
 
 /**
  * Statics

@@ -120,12 +120,13 @@ exports.list = async (req, res, next) => {
 exports.take = async (req, res, next) => {
     const {user} = req;
     const {task} = req.locals;
-    if (task.status !== 'available') {
-        const err = new Error('Task is not available');
-        err.status = httpStatus.BAD_REQUEST;
-        throw err;
-    }
     try {
+        if (task.status !== 'available') {
+            const err = new Error('Task is not available');
+            err.stack = httpStatus.BAD_REQUEST;
+            throw err;
+        }
+
         if (!task.hasManyAssignee) {
             task.status = 'assigned';
             await task.save();
@@ -141,12 +142,13 @@ exports.take = async (req, res, next) => {
 exports.release = async (req, res, next) => {
     const {user} = req;
     const {task} = req.locals;
-    if (task.status !== 'assigned' && !task.hasManyAssignee) {
-        const err = new Error('Task is not assigned');
-        err.status = httpStatus.BAD_REQUEST;
-        throw err;
-    }
     try {
+        if (task.status !== 'assigned' && !task.hasManyAssignee) {
+            const err = new Error('Task is not assigned');
+            err.stack = httpStatus.BAD_REQUEST;
+            throw err;
+        }
+
         task.status = 'available';
         await task.save();
         user.tasks = reject(user.tasks, item => item._id === task._id);
@@ -160,12 +162,13 @@ exports.release = async (req, res, next) => {
 exports.finish = async (req, res, next) => {
     const {user} = req;
     const {task} = req.locals;
-    if (task.status !== 'assigned' && !task.hasManyAssignee) {
-        const err = new Error('Task is not assigned');
-        err.status = httpStatus.BAD_REQUEST;
-        next(err);
-    }
     try {
+        if (task.status !== 'assigned' && !task.hasManyAssignee) {
+            const err = new Error('Task is not assigned');
+            err.status = httpStatus.BAD_REQUEST;
+            throw err;
+        }
+
         if (!task.hasManyAssignee) {
             task.status = 'done';
             await task.save();

@@ -8,6 +8,7 @@ const {omitBy, isNil} = require('lodash');
 const moment = require('moment-timezone');
 
 
+
 const APIError = require('../utils/APIError');
 
 /**
@@ -107,6 +108,7 @@ taskSchema.method({
 
 taskSchema.pre('save', async function save(next) {
     try {
+
         return next();
     } catch (error) {
         return next(error);

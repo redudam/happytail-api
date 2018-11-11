@@ -7,11 +7,11 @@
 
 const express = require('express');
 const controller = require('../../../controllers/task/index');
-const { authorize, USER } = require('../../../middlewares/auth');
+const { authorize, USER, ORGANIZATION } = require('../../../middlewares/auth');
 
 const router = express.Router({mergeParams: true});
 
-router.post('/', authorize(USER), controller.finish)
+router.post('/', authorize([USER, ORGANIZATION]), controller.finish)
 
 module.exports = router;
 ;

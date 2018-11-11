@@ -10,6 +10,7 @@ const {omit} = require('lodash');
 const reject = require('lodash/reject');
 const Task = require('../../models/task.model');
 const User = require('../../models/user.model');
+const Org = require('../../models/organization.model');
 const {handler: errorHandler} = require('../../middlewares/error');
 
 
@@ -40,11 +41,16 @@ exports.get = (req, res) => res.json(req.locals.task.transform());
  */
 exports.create = async (req, res, next) => {
     try {
+        const {user} = req;
         const loggedUserId = req.user._id;
         let task = new Task(req.body);
         task.organization = user.organization;
         task.ownerId = loggedUserId;
         task = await task.save();
+        const organization = await Org.findOne({id: user.organization.id});
+        organization.taskStats.all += 1;
+        organization.taskStats.active += 1;
+        await organization.save();
         res.status(httpStatus.CREATED);
         res.json(task.transform());
     } catch (error) {
@@ -116,7 +122,7 @@ exports.take = async (req, res, next) => {
     const {task} = req.locals;
     if (task.status !== 'available') {
         const err = new Error('Task is not available');
-        err.stack = httpStatus.BAD_REQUEST;
+        err.status = httpStatus.BAD_REQUEST;
         throw err;
     }
     try {
@@ -137,7 +143,7 @@ exports.release = async (req, res, next) => {
     const {task} = req.locals;
     if (task.status !== 'assigned' && !task.hasManyAssignee) {
         const err = new Error('Task is not assigned');
-        err.stack = httpStatus.BAD_REQUEST;
+        err.status = httpStatus.BAD_REQUEST;
         throw err;
     }
     try {
@@ -156,8 +162,8 @@ exports.finish = async (req, res, next) => {
     const {task} = req.locals;
     if (task.status !== 'assigned' && !task.hasManyAssignee) {
         const err = new Error('Task is not assigned');
-        err.stack = httpStatus.BAD_REQUEST;
-        throw err;
+        err.status = httpStatus.BAD_REQUEST;
+        next(err);
     }
     try {
         if (!task.hasManyAssignee) {
@@ -167,6 +173,13 @@ exports.finish = async (req, res, next) => {
         const userTask = user.tasks.find(item => item._id === task._id);
         userTask.status = 'done';
         await user.save();
+        const organization = await Org.findOne({id: user.organization.id});
+        organization.taskStats.done += 1;
+        organization.taskStats.active -= 1;
+        const organizationTask = organization.tasks.find(item => item._id === task._id);
+        organizationTask.status = 'done';
+        await organizationTask.save();
+        await organization.save();
         res.sendStatus(httpStatus.ACCEPTED)
     } catch (e) {
         next(e);

@@ -7,6 +7,7 @@
 
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
+const Task = require('./task.model');
 
 
 const APIError = require('../utils/APIError');
@@ -45,12 +46,15 @@ const organizationSchema = new mongoose.Schema({
     taskStats: {
         all: {
             type: Number,
+            default: 0
         },
         active:{
             type: Number,
+            default: 0
         },
         done:{
             type: Number,
+            default: 0
         }
     }
 });

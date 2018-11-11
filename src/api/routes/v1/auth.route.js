@@ -5,6 +5,7 @@
 const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/auth');
+const oAuthLogin = require('../../middlewares/auth').oAuth;
 const {
     login,
     register,
@@ -97,6 +98,9 @@ router.route('/login')
 router.route('/refresh-token')
     .post(validate(refresh), controller.refresh);
 
+
+router.route('/vk')
+    .post(oAuthLogin('vk'), controller.oAuth);
 
 /**
  * TODO: POST /v1/auth/reset-password

@@ -8,6 +8,7 @@ const {omitBy, isNil} = require('lodash');
 const bcrypt = require('bcryptjs');
 const moment = require('moment-timezone');
 const jwt = require('jwt-simple');
+const uuidv4 = require('uuid/v4');
 
 const APIError = require('../utils/APIError');
 const {env, jwtSecret, jwtExpirationInterval} = require('../../config/vars');
@@ -95,7 +96,10 @@ const userSchema = new mongoose.Schema({
         done: {
             type: Number,
         }
-    }
+    },
+    services: {
+        vk: String,
+    },
 }, {
     timestamps: true,
 });
@@ -111,7 +115,7 @@ userSchema.pre('save', async function save(next) {
         const {tasks} = this;
         if (!this.isModified('password')) {
 
-            if(tasks){
+            if (tasks) {
                 tasks.forEach(task => {
                     if (task.status === 'assigned') {
                         this.taskStats.undone += 1;
@@ -302,7 +306,23 @@ userSchema.statics = {
             });
         }
         return error;
-    }
+    },
+
+    async oAuthLogin({
+                         service, user_id, last_name, first_name,
+                     }) {
+        const user = await this.findOne({$or: [{[`services.${service}`]: user_id}, {email}]});
+        if (user) {
+            user.services[service] = user_id;
+            if (!user.last_name) user.lastName = last_name;
+            if (!user.first_name) user.firstName = first_name;
+            return user.save();
+        }
+        const password = uuidv4();
+        return this.create({
+            services: {[service]: user_id}, password, lastName: last_name, firstName: first_name,
+        });
+    },
 };
 
 /**

@@ -1,3 +1,2 @@
-# alarm
+# Happy Tail API
 
-Alarm application for esp8266
